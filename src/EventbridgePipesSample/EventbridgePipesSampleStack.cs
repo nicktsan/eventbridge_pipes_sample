@@ -39,6 +39,7 @@ namespace EventbridgePipesSample
              Creates a new IAM policy with permissions for receiving messages, deleting messages,
              and getting attributes from SQS Queue.
              */
+            /*
             var sourcePolicy = new PolicyDocument(
                 new PolicyDocumentProps
                 {
@@ -55,12 +56,13 @@ namespace EventbridgePipesSample
                         )
                     }
                 }
-            );
+            );*/
 
             /*
              * Creates new policy to allow starting the execution of the state machine,
              * essentially allowing for Eventbridge Pipes to start the execution of the workflow.
              */
+            /*
             var targetPolicy = new PolicyDocument(
                 new PolicyDocumentProps
                 {
@@ -77,10 +79,10 @@ namespace EventbridgePipesSample
                         )
                     }
                 }
-            );
+            );*/
 
             //Create a new role to use Eventbridge Pipes
-            var pipeRole = new Role
+            /*var pipeRole = new Role
             (
                 scope:this,
                 id: "PipeRole",
@@ -94,12 +96,18 @@ namespace EventbridgePipesSample
                     } 
                 }
             );
+            */
 
             /*
              * Create a new pipe. The Cloudformation documentation details which properties need to
              * be set. We set the source and targets for the pipe. Optional enrichment can be
              * added but is not needed.
              */
+            var pipe = new PipeBuilder(this, "SqsToStepFunctionsPipe")
+                .AddSqsSource(queue, 1, 0)
+                .AddStepFunctionTarget(targetStepFunction)
+                .Build();
+            /*
             var pipe = new CfnPipe(scope: this, "MyNewPipe", new CfnPipeProps()
             {
                 RoleArn = pipeRole.RoleArn,
@@ -122,6 +130,7 @@ namespace EventbridgePipesSample
                 }
                 //Optional Enrichment step can be included but is not needed.
             });
+            */
         }
     }
 }
