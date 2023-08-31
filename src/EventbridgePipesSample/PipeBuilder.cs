@@ -44,8 +44,10 @@ public class PipeBuilder
     public PipeBuilder AddSqsSource(Queue queue, int batchSize, int batchWindowSizeInSeconds)
     {
         _source = queue.QueueArn;
-        //Add ReceiveMessage, DeleteMessage, and GetQueueAttributes permissions and policies to
-        //the source
+        /*
+         * Add ReceiveMessage, DeleteMessage, and GetQueueAttributes permissions and IAM policies
+         * for the source
+         */
         _policies.Add(new PolicyStatement(
             new PolicyStatementProps
             {
@@ -102,7 +104,7 @@ public class PipeBuilder
     public PipeBuilder AddStepFunctionTarget(StateMachine stepFunction)
     {
         _target = stepFunction.StateMachineArn;
-        //Add StartExecution policies and permissions to target
+        //Add StartExecution IAM policies and permissions for target
         _policies.Add(new PolicyStatement(
             new PolicyStatementProps
             {
