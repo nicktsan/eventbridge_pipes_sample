@@ -3,6 +3,8 @@ using Amazon.CDK;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.Pipes;
 using Amazon.CDK.AWS.RDS;
+using Amazon.CDK.AWS.SNS;
+using Amazon.CDK.AWS.SNS.Subscriptions;
 using Amazon.CDK.AWS.SQS;
 using Amazon.CDK.AWS.StepFunctions;
 using Constructs;
@@ -14,8 +16,19 @@ namespace EventbridgePipesSample
     {
         internal EventbridgePipesSampleStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
+            //Create a topic for SNS
+            var topic = new Topic(scope: this, id: "SourceTopic");
+
             //Create a new SQS Queue
-            var queue = new Queue(scope:this, id: "SourceSqsQueue");
+            var queue = new Queue(scope: this, id: "SourceSqsQueue");
+
+            //Subscribe Sqs to SNS. Set RawMessageDelivery to true to send just the message body.
+            topic.AddSubscription(
+                new SqsSubscription(queue, new SqsSubscriptionProps
+                {
+                    RawMessageDelivery = true
+                })
+            );
 
             //Messages passed to the StateMachine will be a batch. This map will handle that
             var mapState = new Map(scope: this, id:"BaseMapState", new MapProps()
