@@ -73,7 +73,7 @@ public class PipeBuilder
             {
                 Filters = new[] { new CfnPipe.FilterProperty
                 {
-                    Pattern = ""
+                    Pattern = "{ \"body\": { \"eventType\": \"SampleEvent\"] }}"
                 }}
             }
         };
@@ -186,10 +186,10 @@ public class PipeBuilder
             RoleArn = pipeRole.RoleArn,
             Source = _source,
             SourceParameters = _sourceParametersProperty,
-            //Target = _targetStepFunction,
-            //TargetParameters = _targetStepFunctionParametersProperty,
-            Target = _targetEventBus,
-            TargetParameters = _targetEventBusParametersProperty
+            Target = _targetStepFunction,
+            TargetParameters = _targetStepFunctionParametersProperty,
+            //Target = _targetEventBus,
+            //TargetParameters = _targetEventBusParametersProperty
         });
 
         if (!string.IsNullOrEmpty(_enrichment))

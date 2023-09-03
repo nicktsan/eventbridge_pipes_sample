@@ -63,8 +63,8 @@ namespace EventbridgePipesSample
             //var pipe = new PipeBuilder(this, "SqsToStepFunctionsPipe")
             var pipe = new PipeBuilder(this, "SqsToEventBusPipe")
                 .AddSqsSource(queue, 1, 0)
-                .AddEventBusTarget(targetBus)
-                //.AddStepFunctionTarget(targetStepFunction)
+                //.AddEventBusTarget(targetBus)
+                .AddStepFunctionTarget(targetStepFunction)
                 .Build();
         }
     }
