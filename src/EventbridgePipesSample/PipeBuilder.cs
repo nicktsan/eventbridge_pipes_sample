@@ -73,7 +73,7 @@ public class PipeBuilder
             {
                 Filters = new[] { new CfnPipe.FilterProperty
                 {
-                    Pattern = "{ \"body\": { \"eventType\": \"SampleEvent\"] }}"
+                    Pattern = "{ \"body\": { \"eventType\": [\"SampleEvent\"] }}"
                 }}
             }
         };
