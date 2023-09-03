@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Amazon.CDK.AWS.SQS;
 using Amazon.CDK.AWS.SNS;
+using Amazon.CDK.AWS.CodeStarNotifications;
 
 namespace EventbridgePipesSample;
 
@@ -18,16 +19,19 @@ public class PipeBuilder
 {
     private List<PolicyStatement> _policies;
     private CfnPipe.PipeSourceParametersProperty _sourceParametersProperty;
-    private CfnPipe.PipeTargetParametersProperty _targetParametersProperty;
+    private CfnPipe.PipeTargetParametersProperty _targetEventBusParametersProperty;
+    private CfnPipe.PipeTargetParametersProperty _targetStepFunctionParametersProperty;
     private CfnPipe.PipeEnrichmentParametersProperty _enrichmentParametersProperty;
     private string _source;
-    private string _target;
+    private string _targetStepFunction;
+    private string _targetEventBus;
     private string _enrichment;
 
     private Construct _scope;
     private string _name;
     private static string[] SQS_ACTIONS;
     private static string[] SF_ACTIONS;
+    private static string[] EVENTBUS_ACTIONS;
 
     public PipeBuilder(Construct scope, string name)
     {
@@ -40,6 +44,7 @@ public class PipeBuilder
     {
         SQS_ACTIONS = new[] { "sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:GetQueueAttributes" };
         SF_ACTIONS = new[] { "states:StartExecution" };
+        EVENTBUS_ACTIONS = new[] { "events:PutEvents" };
     }
 
     public PipeBuilder AddSqsSource(Queue queue, int batchSize, int batchWindowSizeInSeconds)
@@ -63,6 +68,13 @@ public class PipeBuilder
             {
                 BatchSize = batchSize,
                 MaximumBatchingWindowInSeconds = batchWindowSizeInSeconds
+            },
+            FilterCriteria = new CfnPipe.FilterCriteriaProperty
+            {
+                Filters = new[] { new CfnPipe.FilterProperty
+                {
+                    Pattern = ""
+                }}
             }
         };
 
@@ -102,9 +114,33 @@ public class PipeBuilder
         return this;
     }
 
+    public PipeBuilder AddEventBusTarget(EventBus bus)
+    {
+        //TODO
+        _targetEventBus = bus.EventBusArn;
+        //Add PutEvents IAM policies and permissions for target
+        _policies.Add(new PolicyStatement(
+            new PolicyStatementProps
+            {
+                Resources = new[] { bus.EventBusArn },
+                Actions = EVENTBUS_ACTIONS,
+                Effect = Effect.ALLOW
+            }));
+
+        _targetEventBusParametersProperty = new CfnPipe.PipeTargetParametersProperty()
+        {
+            EventBridgeEventBusParameters = new CfnPipe.PipeTargetEventBridgeEventBusParametersProperty()
+            {
+                DetailType = "SampleEventTriggered",
+                Source = "com.binaryheap.sample-source"
+            }
+        };
+        return this;
+    }
+
     public PipeBuilder AddStepFunctionTarget(StateMachine stepFunction)
     {
-        _target = stepFunction.StateMachineArn;
+        _targetStepFunction = stepFunction.StateMachineArn;
         //Add StartExecution IAM policies and permissions for target
         _policies.Add(new PolicyStatement(
             new PolicyStatementProps
@@ -114,7 +150,7 @@ public class PipeBuilder
                 Effect = Effect.ALLOW
             }));
 
-        _targetParametersProperty = new CfnPipe.PipeTargetParametersProperty()
+        _targetStepFunctionParametersProperty = new CfnPipe.PipeTargetParametersProperty()
         {
             StepFunctionStateMachineParameters = new CfnPipe.PipeTargetStateMachineParametersProperty()
             {
@@ -150,8 +186,10 @@ public class PipeBuilder
             RoleArn = pipeRole.RoleArn,
             Source = _source,
             SourceParameters = _sourceParametersProperty,
-            Target = _target,
-            TargetParameters = _targetParametersProperty,
+            //Target = _targetStepFunction,
+            //TargetParameters = _targetStepFunctionParametersProperty,
+            Target = _targetEventBus,
+            TargetParameters = _targetEventBusParametersProperty
         });
 
         if (!string.IsNullOrEmpty(_enrichment))
