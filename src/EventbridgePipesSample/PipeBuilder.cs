@@ -71,6 +71,7 @@ public class PipeBuilder
             },
             FilterCriteria = new CfnPipe.FilterCriteriaProperty
             {
+                //Add a filter that only processes SNS messages with eventType "SampleEvent"
                 Filters = new[] { new CfnPipe.FilterProperty
                 {
                     Pattern = "{ \"body\": { \"eventType\": [\"SampleEvent\"] }}"
@@ -116,7 +117,6 @@ public class PipeBuilder
 
     public PipeBuilder AddEventBusTarget(EventBus bus)
     {
-        //TODO
         _targetEventBus = bus.EventBusArn;
         //Add PutEvents IAM policies and permissions for target
         _policies.Add(new PolicyStatement(
@@ -133,7 +133,14 @@ public class PipeBuilder
             {
                 DetailType = "SampleEventTriggered",
                 Source = "com.binaryheap.sample-source"
-            }
+            },
+            //Transforms how SQS will post data to the target Event Bus
+            InputTemplate = "{\"metaBody\": {\"correlationId\": <$.messageId>}, " +
+                            "\"messageBody\": {" +
+                                "\"field1\": <$.body.field1>, " +
+                                "\"field2\": <$.body.field2>, " +
+                                "\"field3\": <$.body.field3>}" +
+                            "}"
         };
         return this;
     }
@@ -186,10 +193,10 @@ public class PipeBuilder
             RoleArn = pipeRole.RoleArn,
             Source = _source,
             SourceParameters = _sourceParametersProperty,
-            Target = _targetStepFunction,
-            TargetParameters = _targetStepFunctionParametersProperty,
-            //Target = _targetEventBus,
-            //TargetParameters = _targetEventBusParametersProperty
+            //Target = _targetStepFunction,
+            //TargetParameters = _targetStepFunctionParametersProperty,
+            Target = _targetEventBus,
+            TargetParameters = _targetEventBusParametersProperty
         });
 
         if (!string.IsNullOrEmpty(_enrichment))
