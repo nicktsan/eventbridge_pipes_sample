@@ -39,7 +39,7 @@ namespace EventbridgePipesSample
             });
 
             //Messages passed to the StateMachine will be a batch. This map will handle that
-            var mapState = new Map(scope: this, id:"BaseMapState", new MapProps()
+            /*var mapState = new Map(scope: this, id:"BaseMapState", new MapProps()
             {
                 ItemsPath = JsonPath.EntirePayload
             });
@@ -50,11 +50,12 @@ namespace EventbridgePipesSample
             }));
 
             //Create a step function for the event bus to target
-            var targetStepFunction = new StateMachine(scope: this, id: "TargetStateMachine", new StateMachineProps()
+            var targetStepFunction = new StateMachine(scope: this, id: "StateMachineConstruct", new StateMachineProps()
             {
-                StateMachineName = "PipesTargetStateMachine",
+                StateMachineName = "EventBridgeTargetStateMachine",
                 DefinitionBody = DefinitionBody.FromChainable(mapState)
-            });
+            });*/
+            
             /*
              * Create a new pipe. The Cloudformation documentation details which properties need to
              * be set. We set the source and targets for the pipe. Optional enrichment can be
@@ -66,6 +67,10 @@ namespace EventbridgePipesSample
                 .AddEventBusTarget(targetBus)
                 //.AddStepFunctionTarget(targetStepFunction)
                 .Build();
+
+            //Create a statemachine using step functions that event bridge will target
+            var stateMachine = new StateMachineBuilder(this, "EventBridgeToStepFunctions")
+                .BuildStateMachine();
         }
     }
 }

@@ -176,17 +176,14 @@ public class PipeBuilder
                 Statements = _policies.ToArray()
             });
         //Create a new role for Eventbridge Pipes
-        var pipeRole = new Role(
-            _scope,
-            $"{_name}PipeRole",
-            new RoleProps
+        var pipeRole = new Role(_scope, $"{_name}PipeRole", new RoleProps
+        {
+            AssumedBy = new ServicePrincipal("pipes.amazonaws.com"),
+            InlinePolicies = new Dictionary<string, PolicyDocument>(2)
             {
-                AssumedBy = new ServicePrincipal("pipes.amazonaws.com"),
-                InlinePolicies = new Dictionary<string, PolicyDocument>(2)
-                {
-                    {"Policy", pipesPolicy},
-                }
-            });
+                {"Policy", pipesPolicy},
+            }
+        });
 
         var pipe = new CfnPipe(_scope, $"{_name}MyNewPipe", new CfnPipeProps()
         {
