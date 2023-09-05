@@ -71,6 +71,10 @@ namespace EventbridgePipesSample
             //Create a statemachine using step functions that event bridge will target
             var stateMachine = new StateMachineBuilder(this, "EventBridgeToStepFunctions")
                 .BuildStateMachine();
+
+            //Create the EventBridge rule to trigger the state machine
+            new EventBridgeRuleBuilder(this, "EventBridgeRuleBuilder")
+                .BuildEventBridge(targetBus, stateMachine.getStateMachine());
         }
     }
 }

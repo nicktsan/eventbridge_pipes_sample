@@ -18,11 +18,17 @@ namespace EventbridgePipesSample
     {
         private Construct _scope;
         private string _name;
+        private StateMachine _stateMachine;
 
         public StateMachineBuilder(Construct scope, string name)
         {
             this._scope = scope;
             this._name = name;
+        }
+
+        public StateMachine getStateMachine()
+        {
+            return this._stateMachine;
         }
 
         public StateMachineBuilder BuildStateMachine()
@@ -44,7 +50,7 @@ namespace EventbridgePipesSample
             var flow = new Succeed(_scope, "DefaultSucceed");
 
             //Create a step function for the event bus to target
-            var targetStepFunction = new StateMachine(scope: _scope, id: "StateMachineConstruct", new StateMachineProps()
+            _stateMachine = new StateMachine(scope: _scope, id: "StateMachineConstruct", new StateMachineProps()
             {
                 Role = stateMachineRole,
                 StateMachineName = "EventBridgeTargetStateMachine",
