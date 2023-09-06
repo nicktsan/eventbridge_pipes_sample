@@ -1,4 +1,4 @@
-//Integrates SNS, SQS and StepFunctions with Eventbridge Pipes
+//Integrates SNS, SQS, EventBridge, and StepFunctions with Eventbridge Pipes
 //TODO: Add filtering and enrichment in pipe
 using Amazon.CDK;
 using Amazon.CDK.AWS.Events;
