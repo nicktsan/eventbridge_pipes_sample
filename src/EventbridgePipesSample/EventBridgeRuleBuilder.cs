@@ -49,7 +49,7 @@ public class EventBridgeRuleBuilder
 
         rule.AddTarget(
             new SfnStateMachine(stateMachine, new SfnStateMachineProps{
-                Input = RuleTargetInput.FromObject(new Dictionary<string, string> { { "SomeParam", "SomeValue" } }),
+                Input = RuleTargetInput.FromEventPath("$.detail"),
                 DeadLetterQueue = dlq,
                 Role = role,
             })
