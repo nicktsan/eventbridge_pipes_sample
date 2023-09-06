@@ -37,7 +37,7 @@ namespace EventbridgePipesSample
             var stepFunctionlogGroup = new LogGroup(_scope, "StepFunctionCloudWatchLogs", 
                 new LogGroupProps
                 {
-                    LogGroupName = "/aws/vendedlogs/states/sample-state-machine",
+                    LogGroupName = "/aws/vendedlogs/states/sample-state-machine"
                 }
             );
             //Create a role for the state machine

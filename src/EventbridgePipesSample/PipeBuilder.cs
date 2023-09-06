@@ -137,8 +137,9 @@ public class PipeBuilder
             //Transforms how SQS will post data to the target Event Bus
             InputTemplate = "{\"metaBody\": {\"correlationId\": <$.messageId>}, " +
                             "\"messageBody\": {" +
-                                "\"movie_title\": <$.body.movie_title>, " +
-                                "\"viewer_id\": <$.body.viewer_id>, " +
+                                "\"field1\": <$.body.field1>, " +
+                                "\"field2\": <$.body.field2>, " +
+                                "\"field3\": <$.body.field3>}" +
                             "}"
         };
         return this;
