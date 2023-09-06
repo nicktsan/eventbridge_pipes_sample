@@ -12,6 +12,3 @@ It uses the [.NET CLI](https://docs.microsoft.com/dotnet/articles/core/) to comp
 * `cdk deploy`       deploy this stack to your default AWS account/region
 * `cdk diff`         compare deployed stack with current state
 * `cdk synth`        emits the synthesized CloudFormation template
-
-Current Issues:
-- Deployment will fail if the log group already exists. Current work around is to manually delete the log group. Will look for a better solution in the future.

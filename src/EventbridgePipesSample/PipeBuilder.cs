@@ -135,11 +135,13 @@ public class PipeBuilder
                 Source = "com.binaryheap.sample-source"
             },
             //Transforms how SQS will post data to the target Event Bus
+            /*I might change the hardcoded InputTemplate to use StringBuilder in the future, but this doesn't seem like a 
+            scenario where it is necessary. Also, underscores do not work for JSONs*/
             InputTemplate = "{\"metaBody\": {\"correlationId\": <$.messageId>}, " +
                             "\"messageBody\": {" +
-                                "\"field1\": <$.body.field1>, " +
-                                "\"field2\": <$.body.field2>, " +
-                                "\"field3\": <$.body.field3>}" +
+                                "\"MovieTitle\": <$.body.MovieTitle>, " +
+                                "\"CustomerID\": <$.body.CustomerID>, " +
+                                "\"Date\": <$.body.Date>}" +
                             "}"
         };
         return this;
