@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using Amazon.CDK.AWS.CodeStarNotifications;
-using Amazon.CDK.AWS.Events;
+﻿using Amazon.CDK.AWS.Events;
 using Amazon.CDK.AWS.Events.Targets;
 using Amazon.CDK.AWS.IAM;
-using Amazon.CDK.AWS.SES.Actions;
 using Amazon.CDK.AWS.SQS;
 using Amazon.CDK.AWS.StepFunctions;
 using Constructs;
@@ -32,9 +23,9 @@ public class EventBridgeRuleBuilder
         {
             EventPattern = new EventPattern
             {
-                DetailType = new[]{ "SampleEventTriggered" }
+                DetailType = new[]{ "MovieEventTriggered" }
             },
-            RuleName = "sample-event-triggered-rule",
+            RuleName = "movie-event-triggered-rule",
             EventBus = bus
         });
 

@@ -2,15 +2,10 @@
 //TODO: Add filtering and enrichment in pipe
 using Amazon.CDK;
 using Amazon.CDK.AWS.Events;
-using Amazon.CDK.AWS.IAM;
-using Amazon.CDK.AWS.Pipes;
-using Amazon.CDK.AWS.RDS;
 using Amazon.CDK.AWS.SNS;
 using Amazon.CDK.AWS.SNS.Subscriptions;
 using Amazon.CDK.AWS.SQS;
-using Amazon.CDK.AWS.StepFunctions;
 using Constructs;
-using System.Collections.Generic;
 
 namespace EventbridgePipesSample
 {
@@ -35,27 +30,9 @@ namespace EventbridgePipesSample
             //Create an event bus for eventbridge pipes to target
             var targetBus = new EventBus(this, "bus", new EventBusProps
             {
-                EventBusName = "MyCustomEventBus"
+                EventBusName = "MovieEventBus"
             });
 
-            //Messages passed to the StateMachine will be a batch. This map will handle that
-            /*var mapState = new Map(scope: this, id:"BaseMapState", new MapProps()
-            {
-                ItemsPath = JsonPath.EntirePayload
-            });
-            //Iterates over the batch of messages with 5 second wait time
-            mapState.Iterator(new Wait(scope: this, id: "5SecondWait", new WaitProps()
-            {
-                Time = WaitTime.Duration(Duration.Seconds(5))
-            }));
-
-            //Create a step function for the event bus to target
-            var targetStepFunction = new StateMachine(scope: this, id: "StateMachineConstruct", new StateMachineProps()
-            {
-                StateMachineName = "EventBridgeTargetStateMachine",
-                DefinitionBody = DefinitionBody.FromChainable(mapState)
-            });*/
-            
             /*
              * Create a new pipe. The Cloudformation documentation details which properties need to
              * be set. We set the source and targets for the pipe. Optional enrichment can be
@@ -65,7 +42,6 @@ namespace EventbridgePipesSample
             var pipe = new PipeBuilder(this, "SqsToEventBusPipe")
                 .AddSqsSource(queue, 1, 0)
                 .AddEventBusTarget(targetBus)
-                //.AddStepFunctionTarget(targetStepFunction)
                 .Build();
 
             //Create a statemachine using step functions that event bridge will target
